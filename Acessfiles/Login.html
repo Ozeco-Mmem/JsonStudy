@@ -16,15 +16,49 @@
         </section>
 
         <input type="text">
-        <input type="button" value="로그인" onclick="ExportLoginData()">
+        <input type="button" value="로그인" onclick="ExportLoginData(value)">
 
         <script>
             var header = document.querySelector('header');
             var section = document.querySelector('section');
-            var requestURL = ''
+            var requestURL = 'https://raw.githubusercontent.com/Ozeco-Mmem/JsonStudy/master/db/loginData.json'
+
             function ExportLoginData(value)
             {
+                var request = new XMLHttpRequest();
+
+                request.open('PATCH', requestURL);
+                request.responseType = 'json';
+                request.send();
+
+                request.onload = function() {
+                    var IdObj = request.response;
+                    LogIn(IdObj, value);
+                } 
+            }
+
+            ///////
+            function LogIn(IdObj, value)
+            {
+                var Users = IdObj['LogInList'];
+                var LogInText = document.createElement('h1')
                 
+                var LogInStatus = false
+                foreach(user in Users)
+                {
+                    if(value == user['Id'])
+                    {
+                        LogInText.textContent = "Welcome " + value;
+                        LogInStatus = true
+                    }
+                }
+
+                if(!LogInStatus)
+                {
+                    LogInText.textContent = "LogIn Failed";
+                }
+
+                section.appendChild(LogInText);
             }
         </script>
     </body>
